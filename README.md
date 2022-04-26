@@ -6,6 +6,8 @@ Various SNP imputation are available. Most methods require a VCF input format, k
 
 # Quick start
 
+*HapMap_Imputation* has the R packages [data.table](https://cran.r-project.org/web/packages/data.table/) and [tidyverse](https://cran.r-project.org/web/packages/tidyverse/index.html) as only dependencies.
+
 Download and prepare *HapMap_Imputation*:
 ```
 git clone https://github.com/mwylerCH/HapMap_Imputation/
