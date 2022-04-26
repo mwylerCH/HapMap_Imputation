@@ -5,13 +5,11 @@ use strict;
 use English;
 use List::Util qw(max);
 use File::Temp qw/ tempdir /;
-use Cwd;
+use File::Basename;
 
 # script for Hapmap imputation
-#my $HAPMAP ='/home/mwyler/gugus.hapmap';
-#my $HAPMAP ='/home/mwyler/problem.hapmap';
 my $HAPMAP = $ARGV[0];
-my $LOC_R='subHapImpute.R';
+my $LOC_R= dirname($0) . '/subHapImpute.R';
 
 # my %NUCLEOcount;
 my %MAJOR;
