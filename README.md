@@ -15,7 +15,7 @@ export PATH="$PATH:$HOME/HapMap_Imputation"
 ```
 Usage 
 ```
-perl HapMap_Imputation
+HapMap_Imputation.pl FILE.hapmap > FILE.imputed
 ```
 
 
