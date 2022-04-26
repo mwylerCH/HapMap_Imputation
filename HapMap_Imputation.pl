@@ -6,6 +6,7 @@ use English;
 use List::Util qw(max);
 use File::Temp qw/ tempdir /;
 use File::Basename;
+use Cwd;
 
 # script for Hapmap imputation
 my $HAPMAP = $ARGV[0];
