@@ -9,6 +9,7 @@ Various SNP imputation are available. Most methods require a VCF input format, k
 Download and prepare *HapMap_Imputation*:
 ```
 git clone https://github.com/mwylerCH/HapMap_Imputation/
+chmod +x HapMap_Imputation/HapMap_Imputation.pl
 export PATH="$PATH:$HOME/HapMap_Imputation"
 
 ```
