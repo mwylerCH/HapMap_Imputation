@@ -34,7 +34,7 @@ while(<IN>){
 	chomp;
 	my %NUCLEOcount;
 	# remove comments
-	if ($_ !~ m/^rs#/){
+	if ($_ !~ m/^rs/){
 		# stop if quoted
 		if ($_ =~ m/"/){
 			print "ERROR: Remove quotes from input file first.\n";
