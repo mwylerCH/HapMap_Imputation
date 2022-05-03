@@ -258,8 +258,6 @@ while (my ($p,$o) = each %ALL ) {
 	print "$p $o\n";
 }
 
-system "cp -r $TEMPfolder robascia";
-
 
 
 
