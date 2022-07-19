@@ -137,7 +137,11 @@ while(<IN>){
 		## get the name of chromosome
 		my $CHROMNAME = $ROW[2];
 		# get marker names
-		$HEADER{$CHROMNAME} .= $ROW[0] . ' ';
+		if (defined($HEADER{$CHROMNAME})){
+			$HEADER{$CHROMNAME} = join(' ', $HEADER{$CHROMNAME}, $ROW[0]);
+		} else {
+			$HEADER{$CHROMNAME} = $ROW[0];
+		}
 		# write out to single chromosome files
 		my $CHROMFILE = $TEMPfolder . "/" . $CHROMNAME . '.hapmap';
 		open(FH, '>>', $CHROMFILE) or die $!;
