@@ -95,7 +95,7 @@ open(IN, $HAPMAP) or die "can't open $HAPMAP";
 while(<IN>){
 	chomp;
 	# remove comments
-	if ($_ !~ m/^rs#/){
+	if ($_ !~ m/^rs/){
 		my @ROW = (split ',', $_);
 		# get the name of chromosome
 		my $NAME = $ROW[2];
