@@ -101,7 +101,7 @@ while(<IN>){
 		if (! grep( /^$NAME$/, @CHROM )){
 			push(@CHROM, $NAME);
 		}
-	} elsif ($_ =~ m/^rs#/){
+	} elsif ($_ =~ m/^rs/){
 		# get header
 		$HAPMAPheader = $_ ;
 	}
