@@ -1,4 +1,6 @@
 #!/usr/bin/perl
+# Author Michele Wyler, Puregene AG, Switzerland
+# With contribution and testing by Lukas Kronenberg, John Innes Center, UK
 
 use warnings;
 use strict;
