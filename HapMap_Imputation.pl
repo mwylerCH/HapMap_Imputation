@@ -108,6 +108,11 @@ while(<IN>){
 }
 close (IN);
 
+# test if defined (aka input format)
+if( ! length $HAPMAPheader ) { 
+	die "Check formatting of $HAPMAP";
+}
+
 # and prepare temp files (place only header)
 my $dir = getcwd . "/";
 my $TEMPfolder = tempdir( DIR => $dir, CLEANUP => 1 ); 
