@@ -42,6 +42,10 @@ while(<IN>){
 			print "ERROR: Remove quotes from input file first.\n";
     			exit;
 		}
+		if ($_ =~ m/ /){
+			print "ERROR: File contains spaces, hapmap needs to be comma separated.\n";
+    			exit;
+		}
 		my @ROW = (split ',', $_);
 		# get the name of markers
 		my $NAME = $ROW[0];
