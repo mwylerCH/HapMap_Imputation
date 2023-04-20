@@ -16,7 +16,7 @@ chmod +x HapMap_Imputation/HapMap_Imputation.pl
 export PATH="$PATH:$HOME/HapMap_Imputation"
 
 ```
-Usage 
+Usage (on CSV hapmaps)
 ```
 HapMap_Imputation.pl FILE.hapmap > FILE.imputed
 ```
