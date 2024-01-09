@@ -26,7 +26,7 @@ HapMap_Imputation.pl FILE.hapmap > FILE.imputed
 
 ### software details
 
-The new script requires a genotyping information in a hapmap format (comma separated, http://augustogarcia.me/statgen-esalq/Hapmap-and-VCF-formats-and-its-integration-with-onemap/#hapmap). 
+The new script requires a genotyping information in a hapmap format (comma separated, see [here](https://statgen.esalq.usp.br/site/Hapmap-and-VCF-formats-and-its-integration-with-onemap/#hapmap)). 
 
 In a first step, *HapMap_Imputation* counts the occourence of each nucleotide at every single genotyped position. The most common nucleotide is defined as major allele, the second is defined as minor allele. Missing genotyping information is excluded. In the case major and minor alleles accour at the same number, the nucleotide of the reference *cs10* (available as GCF_900626175.1 on NCBI) is choosen as major allele.
 
