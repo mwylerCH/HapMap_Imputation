@@ -141,8 +141,6 @@ foreach (@CHROM){
 	close(FH);
 }
 
-system "cp -r $TEMPfolder cucu";
-
 # print out sorted file (remove header, chromosome first, position second)
 my $SORTEDfile = $TEMPfolder . '/sortedHapmap.csv';
 system "fgrep -v '#' $HAPMAP | sort -t',' -k3,3 -k4,4n > $SORTEDfile";
