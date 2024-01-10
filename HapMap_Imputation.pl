@@ -29,6 +29,20 @@ while(<DATA>){
 	$REFERENCE{"$REFmarker"} = $REFallel;	
 }
 
+### Test header and separator by first line -----------------
+
+open my $firstRow, '<', $HAPMAP; 
+my $header = <$firstRow>; 
+close $firstRow;
+
+# test presence of 'rs#'
+if ($header !~ m/^rs#/ ){
+	print "ERROR: header has to contain `rs#`!\n";
+	exit;
+} elsif ($header !~ m/,/ ){
+	print "ERROR: Input needs comma separation!\n";
+	exit;
+}
 
 ### get minor and major allel per chromosome ----------------------
 open(IN, $HAPMAP) or die "can't open $HAPMAP";
@@ -40,10 +54,6 @@ while(<IN>){
 		# stop if quoted
 		if ($_ =~ m/"/){
 			print "ERROR: Remove quotes from input file first.\n";
-    			exit;
-		}
-		if ($_ =~ m/ /){
-			print "ERROR: File contains spaces, hapmap needs to be comma separated.\n";
     			exit;
 		}
 		my @ROW = (split ',', $_);
@@ -114,6 +124,7 @@ while(<IN>){
 }
 close (IN);
 
+
 # test if defined (aka input format)
 if( ! length $HAPMAPheader ) { 
 	die "Check formatting of $HAPMAP";
@@ -130,10 +141,11 @@ foreach (@CHROM){
 	close(FH);
 }
 
+system "cp -r $TEMPfolder cucu";
+
 # print out sorted file (remove header, chromosome first, position second)
 my $SORTEDfile = $TEMPfolder . '/sortedHapmap.csv';
 system "fgrep -v '#' $HAPMAP | sort -t',' -k3,3 -k4,4n > $SORTEDfile";
-
 
 # hash containing header for output (marker list)
 my %HEADER;
@@ -143,7 +155,7 @@ open(IN, $SORTEDfile) or die "can't open $SORTEDfile";
 while(<IN>){
 	chomp;
 	# remove comments
-	if ($_ !~ m/^rs#/){
+	if ($_ !~ m/^rs/){
 		my @ROW = (split ',', $_);
 		## get the name of chromosome
 		my $CHROMNAME = $ROW[2];
