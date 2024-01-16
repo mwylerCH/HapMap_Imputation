@@ -22,80 +22,80 @@ my @NUCLEOTIDE = ('A', 'C', 'T', 'G');
 ### get reference allel from _DATA_ ----------------------
 my %REFERENCE;
 while(<DATA>){
-	chomp;
-	# read line
-	my $REFmarker = (split ' ', $_)[0];
-	my $REFallel = (split ' ', $_)[1];
-	$REFERENCE{"$REFmarker"} = $REFallel;	
+        chomp;
+        # read line
+        my $REFmarker = (split ' ', $_)[0];
+        my $REFallel = (split ' ', $_)[1];
+        $REFERENCE{"$REFmarker"} = $REFallel;
 }
 
 ### Test header and separator by first line -----------------
 
-open my $firstRow, '<', $HAPMAP; 
-my $header = <$firstRow>; 
+open my $firstRow, '<', $HAPMAP;
+my $header = <$firstRow>;
 close $firstRow;
 
 # test presence of 'rs#'
 if ($header !~ m/^rs#/ ){
-	print "ERROR: header has to contain `rs#`!\n";
-	exit;
+        print "ERROR: header has to contain `rs#`!\n";
+        exit;
 } elsif ($header !~ m/,/ ){
-	print "ERROR: Input needs comma separation!\n";
-	exit;
+        print "ERROR: Input needs comma separation!\n";
+        exit;
 }
 
 ### get minor and major allel per chromosome ----------------------
 open(IN, $HAPMAP) or die "can't open $HAPMAP";
 while(<IN>){
-	chomp;
-	my %NUCLEOcount;
-	# remove comments
-	if ($_ !~ m/^rs/){
-		# stop if quoted
-		if ($_ =~ m/"/){
-			print "ERROR: Remove quotes from input file first.\n";
-    			exit;
-		}
-		my @ROW = (split ',', $_);
-		# get the name of markers
-		my $NAME = $ROW[0];
-		# extract genotyping columns (from 11)
-		my $NGENO = @ROW;
-		$NGENO = $NGENO-1;
-		# go for each line
-		my $ALLGENO = join("",@ROW[11..$NGENO]);
-		$ALLGENO =~ s/\s//g;
-		$ALLGENO =~ s/N//g;
-		# count number of alleles (into hash)
-		foreach (@NUCLEOTIDE){
-			my $count = length( $ALLGENO =~ s/[^\Q$_\E]//rg );
-			$NUCLEOcount{"$_"} = $count;
-		}
-		
-		## reference as major (remove from count table)
-		my $FIRST = max values %NUCLEOcount;
-		# and second highest
-		my $SECOND = (sort values %NUCLEOcount)[-2];
-		# strange behaviour that somethimes is the same
-		if ($FIRST == $SECOND){
-			$SECOND = (sort values %NUCLEOcount)[-1];
-		}
+        chomp;
+        my %NUCLEOcount;
+        # remove comments
+        if ($_ !~ m/^rs/){
+                # stop if quoted
+                if ($_ =~ m/"/){
+                        print "ERROR: Remove quotes from input file first.\n";
+                        exit;
+                }
+                my @ROW = (split ',', $_);
+                # get the name of markers
+                my $NAME = $ROW[0];
+                # extract genotyping columns (from 11)
+                my $NGENO = @ROW;
+                $NGENO = $NGENO-1;
+                # go for each line
+                my $ALLGENO = join("",@ROW[11..$NGENO]);
+                $ALLGENO =~ s/\s//g;
+                $ALLGENO =~ s/N//g;
+                # count number of alleles (into hash)
+                foreach (@NUCLEOTIDE){
+                        my $count = length( $ALLGENO =~ s/[^\Q$_\E]//rg );
+                        $NUCLEOcount{"$_"} = $count;
+                }
 
-		# reverse hash
-		my %REVERSE = reverse %NUCLEOcount;
-		# add to collection
-		if ($REVERSE{"$FIRST"} eq $REVERSE{"$SECOND"}){
-			$MAJOR{$NAME} = $REFERENCE{"$NAME"};
-			# remove reference
-			my $REFnucleotide = $MAJOR{$NAME};
-			$NUCLEOcount{"$REFnucleotide"} = 0 ;
-			$SECOND = max values %NUCLEOcount;
-			$MINOR{$NAME} = $REVERSE{"$SECOND"};
-		} else {
-			$MAJOR{$NAME} = $REVERSE{"$FIRST"};	
-			$MINOR{$NAME} = $REVERSE{"$SECOND"};
-		}
-	}
+                ## reference as major (remove from count table)
+                my $FIRST = max values %NUCLEOcount;
+                # and second highest
+                my $SECOND = (sort values %NUCLEOcount)[-2];
+                # strange behaviour that somethimes is the same
+                if ($FIRST == $SECOND){
+                        $SECOND = (sort values %NUCLEOcount)[-1];
+                }
+
+                # reverse hash
+                my %REVERSE = reverse %NUCLEOcount;
+                # add to collection
+                if ($REVERSE{"$FIRST"} eq $REVERSE{"$SECOND"}){
+                        $MAJOR{$NAME} = $REFERENCE{"$NAME"};
+                        # remove reference
+                        my $REFnucleotide = $MAJOR{$NAME};
+                        $NUCLEOcount{"$REFnucleotide"} = 0 ;
+                        $SECOND = max values %NUCLEOcount;
+                        $MINOR{$NAME} = $REVERSE{"$SECOND"};
+                } else {
+                        $MAJOR{$NAME} = $REVERSE{"$FIRST"};
+                        $MINOR{$NAME} = $REVERSE{"$SECOND"};
+                }
+        }
 }
 close (IN);
 
@@ -107,38 +107,38 @@ my $HAPMAPheader ;
 my @CHROM;
 open(IN, $HAPMAP) or die "can't open $HAPMAP";
 while(<IN>){
-	chomp;
-	# remove comments
-	if ($_ !~ m/^rs/){
-		my @ROW = (split ',', $_);
-		# get the name of chromosome
-		my $NAME = $ROW[2];
-		# add to if not already present
-		if (! grep( /^$NAME$/, @CHROM )){
-			push(@CHROM, $NAME);
-		}
-	} elsif ($_ =~ m/^rs/){
-		# get header
-		$HAPMAPheader = $_ ;
-	}
+        chomp;
+        # remove comments
+        if ($_ !~ m/^rs/){
+                my @ROW = (split ',', $_);
+                # get the name of chromosome
+                my $NAME = $ROW[2];
+                # add to if not already present
+                if (! grep( /^$NAME$/, @CHROM )){
+                        push(@CHROM, $NAME);
+                }
+        } elsif ($_ =~ m/^rs/){
+                # get header
+                $HAPMAPheader = $_ ;
+        }
 }
 close (IN);
 
 
 # test if defined (aka input format)
-if( ! length $HAPMAPheader ) { 
-	die "Check formatting of $HAPMAP";
+if( ! length $HAPMAPheader ) {
+        die "Check formatting of $HAPMAP";
 }
 
 # and prepare temp files (place only header)
 my $dir = getcwd . "/";
-my $TEMPfolder = tempdir( DIR => $dir, CLEANUP => 1 ); 
+my $TEMPfolder = tempdir( DIR => $dir, CLEANUP => 1 );
 
 foreach (@CHROM){
-	my $CHROMFILE = $TEMPfolder . "/" . $_ . '.hapmap';
-	open(FH, '>', $CHROMFILE) or die $!;
-	print FH "$HAPMAPheader\n";
-	close(FH);
+        my $CHROMFILE = $TEMPfolder . "/" . $_ . '.hapmap';
+        open(FH, '>', $CHROMFILE) or die $!;
+        print FH "$HAPMAPheader\n";
+        close(FH);
 }
 
 # print out sorted file (remove header, chromosome first, position second)
@@ -151,42 +151,42 @@ my %HEADER;
 # split up files for each chromosome
 open(IN, $SORTEDfile) or die "can't open $SORTEDfile";
 while(<IN>){
-	chomp;
-	# remove comments
-	if ($_ !~ m/^rs/){
-		my @ROW = (split ',', $_);
-		## get the name of chromosome
-		my $CHROMNAME = $ROW[2];
-		# get marker names
-		if (defined($HEADER{$CHROMNAME})){
-			$HEADER{$CHROMNAME} = join(' ', $HEADER{$CHROMNAME}, $ROW[0]);
-		} else {
-			$HEADER{$CHROMNAME} = $ROW[0];
-		}
-		# write out to single chromosome files
-		my $CHROMFILE = $TEMPfolder . "/" . $CHROMNAME . '.hapmap';
-		open(FH, '>>', $CHROMFILE) or die $!;
-		print FH "$_\n";
-		close(FH);
+        chomp;
+        # remove comments
+        if ($_ !~ m/^rs/){
+                my @ROW = (split ',', $_);
+                ## get the name of chromosome
+                my $CHROMNAME = $ROW[2];
+                # get marker names
+                if (defined($HEADER{$CHROMNAME})){
+                        $HEADER{$CHROMNAME} = join(' ', $HEADER{$CHROMNAME}, $ROW[0]);
+                } else {
+                        $HEADER{$CHROMNAME} = $ROW[0];
+                }
+                # write out to single chromosome files
+                my $CHROMFILE = $TEMPfolder . "/" . $CHROMNAME . '.hapmap';
+                open(FH, '>>', $CHROMFILE) or die $!;
+                print FH "$_\n";
+                close(FH);
 
-	} 
+        }
 }
 close (IN);
 
 ## Run R script to prepare for fastPHASE
 my $HAPMAPS = $TEMPfolder . "/*" . ".hapmap";
-system "ls $HAPMAPS |  parallel -j8 'Rscript $LOC_R {} > {.}.FP'";
+system "ls $HAPMAPS |  parallel 'Rscript $LOC_R {} > {.}.FP'";
 
 ## Run fastPhase -----------------
 
-# install fastPHASE 
+# install fastPHASE
 system "wget --quiet --no-verbose http://scheet.org/code/Linuxfp.tar.gz -O $TEMPfolder/fastPHASE.tar.gz";
 system "tar -xf $TEMPfolder/fastPHASE.tar.gz -C $TEMPfolder 2>/dev/null";
 system "chmod +x $TEMPfolder/fastPHASE";
 
 
 # impute
-system "ls $TEMPfolder/*.FP | parallel -j8 '$TEMPfolder/fastPHASE -T10 -o{.}.imputed {}' > /dev/null 2>&1 ";
+system "ls $TEMPfolder/*.FP | parallel '$TEMPfolder/fastPHASE -T10 -o{.}.imputed {}' > /dev/null 2>&1 ";
 
 ## Process fastPHASE output -----------------
 
@@ -195,94 +195,98 @@ my %ALL;
 my @CHROM2 = @CHROM;
 
 foreach (@CHROM){
-	my $FP ="$TEMPfolder/$_.imputed_hapguess_switch.out";
-	my @HAPLO1 ;
-	my @HAPLO2 ;
-	my $GENO;
-	open(IN, $FP) or die "can't open $FP";
-	while(<IN>){
-		chomp;
-		# Geno name
-		if ($_ =~ m/^#/){
-			$GENO = $_;
-			$GENO =~ s/# //;
-			undef @HAPLO1;
-			undef @HAPLO2;	
-		# the 2 genotyping rows
-		} elsif ($_ =~ m/(^1|^0|^\.|^\?)/) {	
-		# assign first haplotype (if undefined)
-			if (! @HAPLO1) {
-				@HAPLO1 = (split ' ', $_)
-			} else {
-				@HAPLO2 = (split ' ', $_)
-			}
-			# merge two Haplo
-			if (@HAPLO1 & @HAPLO2){
-				my $LEN = @HAPLO1;
-				$LEN = $LEN -1;
-				for ( 0 .. $LEN) {
+        my $FP ="$TEMPfolder/$_.imputed_hapguess_switch.out";
+        my @HAPLO1 ;
+        my @HAPLO2 ;
+        my $GENO;
+        open(IN, $FP) or die "can't open $FP";
+        while(<IN>){
+                chomp;
+                # Geno name
+                if ($_ =~ m/^#/){
+                        $GENO = $_;
+                        $GENO =~ s/# //;
+                        undef @HAPLO1;
+                        undef @HAPLO2;
+                # the 2 genotyping rows
+                } elsif ($_ =~ m/(^1|^0|^\.|^\?)/) {
+                # assign first haplotype (if undefined)
+                        if (! @HAPLO1) {
+                                @HAPLO1 = (split ' ', $_)
+                        } else {
+                                @HAPLO2 = (split ' ', $_)
+                        }
+                        # merge two Haplo
+                        if (@HAPLO1 & @HAPLO2){
+                                my $LEN = @HAPLO1;
+                                $LEN = $LEN -1;
+                                for ( 0 .. $LEN) {
 
-					# add them to hash
-					$ALL{$GENO} .= $HAPLO1[$_] . $HAPLO2[$_] . ' ';
-				}
-			} 
-		} 	
-	}
-	close (IN);
+                                        # add them to hash
+                                        $ALL{$GENO} .= $HAPLO1[$_] . $HAPLO2[$_] . ' ';
+                                }
+                        }
+                }
+        }
+        close (IN);
+}
+
+# remove space at the end
+foreach (keys %ALL){
+        $ALL{$_} =~ s/\s+$//g;
 }
 
 # change 10 to 01
 foreach (keys %ALL){
-	$ALL{$_} =~ s/10/01/g;
+        $ALL{$_} =~ s/10/01/g;
 }
 
 
-### substitute 0 with major and 1 with minor allel 
+### substitute 0 with major and 1 with minor allel
 # make array with ordered markers
 my @ALLmarkers;
 foreach (@CHROM2){
-	my @MARKERofChrom = (split ' ', $HEADER{$_});
-	foreach (@MARKERofChrom){
-		push(@ALLmarkers, $_);
-	}
+        my @MARKERofChrom = (split ' ', $HEADER{$_});
+        foreach (@MARKERofChrom){
+                push(@ALLmarkers, $_);
+        }
 }
 
 my $NRmarkers  = scalar keys %MAJOR;
 $NRmarkers = $NRmarkers -1;
 
 for (0..$NRmarkers){
-	my $FORnumber = $_;
-	# get first name of column/marker
-	my $ID = $ALLmarkers[$_];
-	# get allels
-	my $ZERO = $MAJOR{$ID};
-	my $ONE = $MINOR{$ID};
-	# loop through genotyping
-	foreach (keys %ALL){
-		# first split geno row
-		my @GENOrow = (split ' ', $ALL{"$_"});
+        my $FORnumber = $_;
+        # get first name of column/marker
+        my $ID = $ALLmarkers[$_];
+        # get allels
+        my $ZERO = $MAJOR{$ID};
+        my $ONE = $MINOR{$ID};
+        # loop through genotyping
+        foreach (keys %ALL){
+                # first split geno row
+                my @GENOrow = (split ' ', $ALL{"$_"});
 
-		# substitute
-		$GENOrow[$FORnumber] =~ s/0/$ZERO/g ;
-		$GENOrow[$FORnumber] =~ s/1/$ONE/g ;
-		# return into hash
-		$ALL{"$_"} = join(' ', @GENOrow);;		
-	}
+                # substitute
+                $GENOrow[$FORnumber] =~ s/0/$ZERO/g ;
+                $GENOrow[$FORnumber] =~ s/1/$ONE/g ;
+                # return into hash
+                $ALL{"$_"} = join(' ', @GENOrow);;
+        }
 }
 
 
 # print header first
 print "GID ";
 foreach (@CHROM2){
-	print "$HEADER{$_} ";
+        print "$HEADER{$_} ";
 }
 print "\n";
 
 while (my ($p,$o) = each %ALL ) {
-	$p =~ s/ /_/g;
-	print "$p $o\n";
+        $p =~ s/ /_/g;
+        print "$p $o\n";
 }
-
 
 
 
